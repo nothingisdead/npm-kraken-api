@@ -11,7 +11,7 @@ Example Usage:
 
 ```javascript
 var kraken = require('kraken-api');
-var client = new KrakenClient('api_key', 'api_secret');
+var client = kraken('api_key', 'api_secret');
 
 // Display user's balance
 client.api('Balance', null, function(response) {
