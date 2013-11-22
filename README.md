@@ -23,3 +23,8 @@ client.api('Balance', null, function(response) {
 Credit:
 
 I used the example php implementation at https://github.com/payward/kraken-api-client and the python implementation at https://github.com/veox/krakenex as references.
+
+
+Feeling generous? Send me a fraction of a bitcoin!
+
+1JTrxTYqZLjKq4pUqzNzu1ygpBFQ4yR7jL
