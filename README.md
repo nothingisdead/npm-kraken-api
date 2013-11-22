@@ -10,7 +10,6 @@ It exposes all the API methods found here: https://www.kraken.com/help/api throu
 Example Usage:
 
 ```javascript
-var market = 'LTCBTC';
 var kraken = require('kraken-api');
 var client = new KrakenClient('api_key', 'api_secret');
 

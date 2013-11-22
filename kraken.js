@@ -9,7 +9,7 @@ var microtime	= require('microtime');
  * @param {String} secret API Secret
  * @param {String} [otp]  Two-factor password (optional) (also, doesn't work)
  */
-function KrakenClient = function(key, secret, otp) {
+function KrakenClient(key, secret, otp) {
 	var self = this;
 
 	var config = {
