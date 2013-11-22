@@ -27,4 +27,4 @@ I used the example php implementation at https://github.com/payward/kraken-api-c
 
 Feeling generous? Send me a fraction of a bitcoin!
 
-1JTrxTYqZLjKq4pUqzNzu1ygpBFQ4yR7jL
+14cUUaExwcNPGXYAo5k83jrwFdSGsCR6Hu
