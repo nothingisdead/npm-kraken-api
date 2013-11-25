@@ -1,6 +1,6 @@
 {
   "name": "kraken-api",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "kraken.com API client library for NodeJS",
   "keywords": [
     "kraken",
