@@ -74,11 +74,9 @@ function KrakenClient(key, secret, otp) {
 
 		params.nonce = microtime.now();
 
-		// Two-factor authentication doesn't seem to work for API requests.
-		// I need to contact Kraken support about this.
-		// if(config.otp !== undefined) {
-		// 	params.otp = config.otp;
-		// }
+		if(config.otp !== undefined) {
+			params.otp = config.otp;
+		}
 
 		var signature = getMessageSignature(path, params, params.nonce);
 
@@ -132,7 +130,7 @@ function KrakenClient(key, secret, otp) {
 			}
 			else if(typeof callback === 'function') {
 				try {
-					callback.call(self, body);
+					callback.call(self, JSON.parse(body));
 				}
 				catch(e) {
 					throw new Error('Could not understand response from server.');
