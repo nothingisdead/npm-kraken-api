@@ -126,7 +126,7 @@ function KrakenClient(key, secret, otp) {
 
 		var req = request.post(options, function(error, response, body) {
 			if (error) {
-				callback(new Error('Error in server response: ' + JSON.stringify(error), null);
+				callback(new Error('Error in server response: ' + JSON.stringify(error)), null);
 			} else {
                 if (typeof callback === 'function') {
                     var data = null;
