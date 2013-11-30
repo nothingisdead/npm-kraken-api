@@ -107,11 +107,11 @@ function KrakenClient(key, secret, otp) {
 
 	/**
 	 * This method sends the actual HTTP request
-	 * @param  {String}   url      The URL to make the request
-	 * @param  {Object}   headers  Request headers
-	 * @param  {Object}   params   POST body
-	 * @param  {Function} callback A callback function to call when the request is complete
-	 * @return {Object}            The request object
+	 * @param  {String}   url                 The URL to make the request
+	 * @param  {Object}   headers             Request headers
+	 * @param  {Object}   params              POST body
+	 * @param  {Function} callback(err, data) A callback function to call when the request is complete
+	 * @return {Object}                       The request object
 	 */
 	function rawRequest(url, headers, params, callback) {
 		// Set custom User-Agent string
@@ -125,16 +125,19 @@ function KrakenClient(key, secret, otp) {
 		};
 
 		var req = request.post(options, function(error, response, body) {
-			if(error) {
-				throw new Error('Error in server response: ' + JSON.stringify(error));
-			}
-			else if(typeof callback === 'function') {
-				try {
-					callback.call(self, JSON.parse(body));
-				}
-				catch(e) {
-					throw new Error('Could not understand response from server.');
-				}
+			if (error) {
+				callback(new Error('Error in server response: ' + JSON.stringify(error), null);
+			} else {
+                if (typeof callback === 'function') {
+                    var data = null;
+                    var err = null;
+    				try {
+                        data = JSON.parse(body);
+    				} catch(e) {
+                        err = new Error('Could not understand response from server: '+body);
+                    }
+                    callback(err, data);
+                }
 			}
 		});
 
