@@ -126,7 +126,7 @@ function KrakenClient(key, secret, otp) {
 
 		var req = request.post(options, function(error, response, body) {
 			if (error) {
-				callback(new Error('Error in server response: ' + JSON.stringify(error), null);
+				callback(new Error('Error in server response: ' + JSON.stringify(error)), null);
 			} else {
 				if (typeof callback === 'function') {
 					var data = null;
@@ -164,7 +164,7 @@ function KrakenClient(key, secret, otp) {
 	 * A helper function to get a SHA512-encrypted signature
 	 * @param  {String} message The message to sign
 	 * @param  {String} secret  The secret (private) key
-	 * @return {Object} Output hash as a Buffer object
+	 * @return {Object} Output  hash as a Buffer object
 	 */
 	function hmac_sha512(message, secret) {
 		var hmac = new crypto.createHmac('sha512', secret);
