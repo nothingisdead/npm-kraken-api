@@ -14,7 +14,7 @@ var kraken = require('kraken-api');
 var client = new kraken('api_key', 'api_secret');
 
 // Display user's balance
-client.api('Balance', null, function(response) {
+client.api('Balance', null, function(error, response) {
 	console.log('Balances:', response.result);
 });
 ```
