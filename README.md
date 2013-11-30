@@ -1,5 +1,5 @@
-npm-kraken-api
-==============
+Node Kraken
+===========
 
 NodeJS Client Library for the Kraken (kraken.com) API
 
