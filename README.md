@@ -1,5 +1,5 @@
-npm-kraken-api
-==============
+Node Kraken
+===========
 
 NodeJS Client Library for the Kraken (kraken.com) API
 
@@ -10,12 +10,25 @@ It exposes all the API methods found here: https://www.kraken.com/help/api throu
 Example Usage:
 
 ```javascript
-var kraken = require('kraken-api');
-var client = new kraken('api_key', 'api_secret');
+var Kraken = require('kraken-api');
+var kraken = new Kraken('api_key', 'api_secret');
 
 // Display user's balance
-client.api('Balance', null, function(response) {
-	console.log('Balances:', response.result);
+kraken.api('Balance', null, function(err, data) {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log(data.result);
+    }
+});
+
+// Get Ticker Info
+kraken.api('Ticker', {"pair": 'XBTCXLTC'}, function(err, data) {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log(data.result);
+    }
 });
 ```
 
