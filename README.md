@@ -51,4 +51,4 @@ I used the example php implementation at https://github.com/payward/kraken-api-c
 
 Feeling generous? Send me a fraction of a bitcoin!
 
-1Q85fXntTgYXZdiGZTnE3tqWhGWuinww31
+12X8GyUpfYxEP7sh1QaU4ngWYpzXJByQn5
