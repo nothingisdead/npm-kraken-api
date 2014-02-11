@@ -127,18 +127,25 @@ function KrakenClient(key, secret, otp) {
 
 		var req = request.post(options, function(error, response, body) {
 			if(typeof callback === 'function') {
-				if (error) {
-					callback.call(self, new Error('Error in server response: ' + JSON.stringify(error)));
+				var data;
+
+				if(error) {
+					throw new Error('Error in server response: ' + JSON.stringify(error));
 				}
 
-				var data;
 				try {
 					data = JSON.parse(body);
-				} catch(e) {
-					return callback.call(self, new Error('Could not understand response from server: ' + body));
 				}
-				
-				callback.call(self, null, data);
+				catch(e) {
+					throw new Error('Could not understand response from server: ' + body);
+				}
+
+				if(data.error && data.error.length) {
+					callback.call(self, data.error, null);
+				}
+				else {
+					callback.call(self, null, data);
+				}
 			}
 		});
 
