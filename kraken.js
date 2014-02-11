@@ -95,13 +95,9 @@ function KrakenClient(key, secret, otp) {
 	 * @return {String}          The request signature
 	 */
 	function getMessageSignature(path, request, nonce) {
-		var secret	= new Buffer(config.secret, 'base64');
-		var message	= querystring.stringify(request);
-
-		var hash = sha256(nonce + message);
-		var hmac = hmac_sha512(path + hash.toString('binary'), secret);
-
-		return hmac.toString('base64');
+        var message = querystring.stringify(request);
+        var hash = new crypto.createHash('sha256').update(nonce + message).digest('binary');
+        return new crypto.createHmac('sha512', new Buffer(secret, 'base64')).update(path + hash, 'binary').digest('base64');
 	}
 
 	/**
@@ -141,39 +137,6 @@ function KrakenClient(key, secret, otp) {
 		});
 
 		return req;
-	}
-
-	/**
-	 * A helper function to get a SHA256 hash
-	 * @param  {String} input Input string
-	 * @return {Object}       Output hash as a Buffer object
-	 */
-	function sha256(input) {
-		var hash = new crypto.createHash('sha256');
-
-		hash.write(input);
-		hash.end();
-
-		var buffer = new Buffer(hash.read());
-
-		return buffer;
-	}
-
-	/**
-	 * A helper function to get a SHA512-encrypted signature
-	 * @param  {String} message The message to sign
-	 * @param  {String} secret  The secret (private) key
-	 * @return {Object}         Output hash as a Buffer object
-	 */
-	function hmac_sha512(message, secret) {
-		var hmac = new crypto.createHmac('sha512', secret);
-
-		hmac.write(message);
-		hmac.end();
-
-		var buffer = new Buffer(hmac.read());
-
-		return buffer;
 	}
 
 	self.api			= api;
