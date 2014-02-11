@@ -95,9 +95,15 @@ function KrakenClient(key, secret, otp) {
 	 * @return {String}          The request signature
 	 */
 	function getMessageSignature(path, request, nonce) {
-        var message = querystring.stringify(request);
-        var hash = new crypto.createHash('sha256').update(nonce + message).digest('binary');
-        return new crypto.createHmac('sha512', new Buffer(secret, 'base64')).update(path + hash, 'binary').digest('base64');
+		var message	= querystring.stringify(request);
+		var secret	= new Buffer(config.secret, 'base64');
+		var hash	= new crypto.createHash('sha256');
+		var hmac	= new crypto.createHmac('sha512', secret);
+
+		var hash_digest	= hash.update(nonce + message).digest('binary');
+		var hmac_digest	= hmac.update(path + hash_digest, 'binary').digest('base64');
+
+		return hmac_digest;
 	}
 
 	/**
