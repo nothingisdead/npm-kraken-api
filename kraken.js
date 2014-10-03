@@ -16,7 +16,8 @@ function KrakenClient(key, secret, otp) {
 		version: '0',
 		key: key,
 		secret: secret,
-		otp: otp
+		otp: otp,
+		timeoutMS: 5000
 	};
 
 	/**
@@ -122,7 +123,8 @@ function KrakenClient(key, secret, otp) {
 			url: url,
 			method: 'POST',
 			headers: headers,
-			form: params
+			form: params,
+			timeout: config.timeoutMS
 		};
 
 		var req = request.post(options, function(error, response, body) {
