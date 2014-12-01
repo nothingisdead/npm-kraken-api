@@ -29,7 +29,7 @@ function KrakenClient(key, secret, otp) {
 	function api(method, params, callback) {
 		var methods = {
 			public: ['Time', 'Assets', 'AssetPairs', 'Ticker', 'Depth', 'Trades', 'Spread', 'OHLC'],
-			private: ['Balance', 'TradeBalance', 'OpenOrders', 'ClosedOrders', 'QueryOrders', 'TradesHistory', 'QueryTrades', 'OpenPositions', 'Ledgers', 'QueryLedgers', 'TradeVolume', 'AddOrder', 'CancelOrder']
+			private: ['Balance', 'TradeBalance', 'OpenOrders', 'ClosedOrders', 'QueryOrders', 'TradesHistory', 'QueryTrades', 'OpenPositions', 'Ledgers', 'QueryLedgers', 'TradeVolume', 'AddOrder', 'CancelOrder','DepositMethods','DepositAddresses','DepositStatus','WithdrawInfo','Withdraw','WithdrawStatus','WithdrawCancel']
 		};
 		if(methods.public.indexOf(method) !== -1) {
 			return publicMethod(method, params, callback);
