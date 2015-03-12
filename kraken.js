@@ -152,7 +152,7 @@ function KrakenClient(key, secret, otp) {
 						}
 					});
 					if (krakenError) {
-						return callback.call(self, new Error('Kraken API returned error: ' + error), null);
+						return callback.call(self, new Error('Kraken API returned error: ' + krakenError), null);
 					}
 				}
 				else {
@@ -160,7 +160,6 @@ function KrakenClient(key, secret, otp) {
 				}
 			}
 		});
-
 		return req;
 	}
 
