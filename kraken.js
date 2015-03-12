@@ -143,9 +143,10 @@ function KrakenClient(key, secret, otp) {
 					callback.call(self, new Error('Could not understand response from server: ' + body), null);
 					return;
 				}
-
+				//If any errors occured, Kraken will give back an arry with error strings under
+				//the key "error". We should then propagate back the error message as a proper error.
 				if(data.error && data.error.length) {
-					callback.call(self, data.error, null);
+					callback.call(self, new Error('Kraken API returned error: ' + data.error[0]), null);
 				}
 				else {
 					callback.call(self, null, data);
