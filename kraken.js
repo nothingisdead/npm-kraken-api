@@ -132,24 +132,31 @@ function KrakenClient(key, secret, otp) {
 				var data;
 
 				if(error) {
-					callback.call(self, new Error('Error in server response: ' + JSON.stringify(error)), null);
-					return;
+					return callback.call(self, new Error('Error in server response: ' + JSON.stringify(error)), null);
 				}
 
 				try {
 					data = JSON.parse(body);
 				}
 				catch(e) {
-					callback.call(self, new Error('Could not understand response from server: ' + body), null);
-					return;
+					return callback.call(self, new Error('Could not understand response from server: ' + body), null);
 				}
-				//If any errors occured, Kraken will give back an arry with error strings under
+				//If any errors occured, Kraken will give back an array with error strings under
 				//the key "error". We should then propagate back the error message as a proper error.
 				if(data.error && data.error.length) {
-					callback.call(self, new Error('Kraken API returned error: ' + data.error[0]), null);
+					var krakenError = null;
+					data.error.forEach(function(element) {
+						if (element.charAt(0) === "E") {
+							krakenError = element.substr(1);
+							return false;
+						}
+					});
+					if (krakenError) {
+						return callback.call(self, new Error('Kraken API returned error: ' + error), null);
+					}
 				}
 				else {
-					callback.call(self, null, data);
+					return callback.call(self, null, data);
 				}
 			}
 		});
