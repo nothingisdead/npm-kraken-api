@@ -10,6 +10,7 @@ var querystring	= require('querystring');
  */
 function KrakenClient(key, secret, otp) {
 	var self = this;
+	var nonce = new Date() * 1000; // spoof microsecond
 
 	var config = {
 		url: 'https://api.kraken.com',
@@ -72,7 +73,7 @@ function KrakenClient(key, secret, otp) {
 		var path	= '/' + config.version + '/private/' + method;
 		var url		= config.url + path;
 
-		params.nonce = new Date() * 1000; // spoof microsecond
+		params.nonce = nonce++
 
 		if(config.otp !== undefined) {
 			params.otp = config.otp;
