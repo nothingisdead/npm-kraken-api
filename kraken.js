@@ -72,7 +72,9 @@ function KrakenClient(key, secret, otp) {
 		var path	= '/' + config.version + '/private/' + method;
 		var url		= config.url + path;
 
-		params.nonce = new Date() * 1000; // spoof microsecond
+		if(!params.nonce) {
+			params.nonce = new Date() * 1000; // spoof microsecond
+		}
 
 		if(config.otp !== undefined) {
 			params.otp = config.otp;
