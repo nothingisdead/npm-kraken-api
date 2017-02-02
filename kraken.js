@@ -17,7 +17,7 @@ function KrakenClient(key, secret, otp) {
 		key: key,
 		secret: secret,
 		otp: otp,
-		timeoutMS: 5000
+		timeoutMS: 0
 	};
 
 	/**
