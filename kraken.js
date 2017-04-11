@@ -121,7 +121,7 @@ function KrakenClient(key, secret, otp) {
 		// Set custom User-Agent string
 		headers['User-Agent'] = 'Kraken Javascript API Client';
 
-		var options = {
+		let options = {
 			url: url,
 			method: 'POST',
 			headers: headers,
@@ -129,9 +129,9 @@ function KrakenClient(key, secret, otp) {
 			timeout: config.timeoutMS
 		};
 
-		var req = request.post(options, function(error, response, body) {
+		let req = request.post(options, function(error, response, body) {
 			if(typeof callback === 'function') {
-				var data;
+				let data;
 
 				if(error) {
 					return callback.call(self, new Error('Error in server response: ' + JSON.stringify(error)), null);
