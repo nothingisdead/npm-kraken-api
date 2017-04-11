@@ -146,7 +146,7 @@ function KrakenClient(key, secret, otp) {
 				//If any errors occured, Kraken will give back an array with error strings under
 				//the key "error". We should then propagate back the error message as a proper error.
 				if(data.error && data.error.length) {
-					var krakenError = null;
+					let krakenError = null;
 					data.error.forEach(function(element) {
 						if (element.charAt(0) === "E") {
 							krakenError = element.substr(1);
