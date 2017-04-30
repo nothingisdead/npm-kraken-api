@@ -48,7 +48,7 @@ Thanks to @tehsenaus and @petermrg for pointing this out.
 
 Credit:
 
-I used the example php implementation at https://github.com/payward/kraken-api-client and the python implementation at https://github.com/veox/krakenex as references.
+I used the example php implementation at https://github.com/payward/kraken-api-client and the python implementation at https://github.com/veox/python3-krakenex as references.
 
 
 Feeling generous? Send me a fraction of a bitcoin!
