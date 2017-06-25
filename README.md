@@ -10,7 +10,7 @@ It exposes all the API methods found here: https://www.kraken.com/help/api throu
 Example Usage:
 
 ```javascript
-var KrakenClient = require('kraken-api');
+var KrakenClient = require('kraken-exchange-api');
 var kraken = new KrakenClient('api_key', 'api_secret');
 
 // Display user's balance
