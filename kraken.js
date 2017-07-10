@@ -7,6 +7,7 @@ var querystring	= require('querystring');
  * @param {String} key    API Key
  * @param {String} secret API Secret
  * @param {String} [otp]  Two-factor password (optional) (also, doesn't work)
+ * @param {Number} [timeoutMs]  Request timeout in milliseconds (optional)
  */
 function KrakenClient(key, secret, otp, timeoutMs) {
 	var self = this;
