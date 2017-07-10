@@ -6,9 +6,9 @@ var querystring	= require('querystring');
  * KrakenClient connects to the Kraken.com API
  * @param {String} key    API Key
  * @param {String} secret API Secret
- * @param {String} [otp]  Two-factor password (optional) (also, doesn't work)
+ * @param {Object} [options]  Configuration object (can contain opt {String} (optional), timeoutMs {Number} (optional))
  */
-function KrakenClient(key, secret, otp) {
+function KrakenClient(key, secret, options) {
 	var self = this;
 
 	var config = {
@@ -16,8 +16,8 @@ function KrakenClient(key, secret, otp) {
 		version: '0',
 		key: key,
 		secret: secret,
-		otp: otp,
-		timeoutMS: 5000
+		otp: options.otp,
+		timeoutMs: options && options.timeoutMs || 5000
 	};
 
 	/**
@@ -126,7 +126,7 @@ function KrakenClient(key, secret, otp) {
 			method: 'POST',
 			headers: headers,
 			form: params,
-			timeout: config.timeoutMS
+			timeout: config.timeoutMs
 		};
 
 		var req = request.post(options, function(error, response, body) {
@@ -165,9 +165,9 @@ function KrakenClient(key, secret, otp) {
 		return req;
 	}
 
-	self.api			= api;
+	self.api = api;
 	self.publicMethod	= publicMethod;
-	self.privateMethod	= privateMethod;
+	self.privateMethod = privateMethod;
 }
 
 module.exports = KrakenClient;
