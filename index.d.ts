@@ -6,8 +6,13 @@ declare module "kraken-api" {
 
     type Callback = (error: Error, success: any) => any
 
+    interface Options {
+        otp?: string
+        timeoutMs?: number
+    }
+
     class KrakenClient {
-        constructor(key: string, secret: string, otp?: string, timeoutMs?: number)
+        constructor(key: string, secret: string, options?: Options)
         public api(command: Command, payload: object, cb?: Callback): void
     }
 
