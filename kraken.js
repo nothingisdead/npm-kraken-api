@@ -1,6 +1,6 @@
-const request     = require('request');
-const crypto      = require('crypto');
-const querystring = require('qs');
+const got    = require('got');
+const crypto = require('crypto');
+const qs     = require('qs');
 
 // Public/Private method names
 const methods = {
@@ -13,6 +13,48 @@ const defaults = {
 	url     : 'https://api.kraken.com',
 	version : 0,
 	timeout : 5000,
+};
+
+// Create a signature for a request
+const getMessageSignature = (path, request, secret, nonce) => {
+	const message       = qs.stringify(request);
+	const secret_buffer = new Buffer(secret, 'base64');
+	const hash          = new crypto.createHash('sha256');
+	const hmac          = new crypto.createHmac('sha512', secret_buffer);
+	const hash_digest   = hash.update(nonce + message).digest('binary');
+	const hmac_digest   = hmac.update(path + hash_digest, 'binary').digest('base64');
+
+	return hmac_digest;
+};
+
+// Send an API request
+const rawRequest = async (url, headers, data, timeout) => {
+	// Set custom User-Agent string
+	headers['User-Agent'] = 'Kraken Javascript API Client';
+
+	const options = { headers, timeout };
+
+	Object.assign(options, {
+		method : 'POST',
+		body   : qs.stringify(data),
+	});
+
+	const { body } = await got(url, options);
+	const response = JSON.parse(body);
+
+	if(response.error && response.error.length) {
+		const error = response.error
+			.filter((e) => e.startsWith('E'))
+			.map((e) => e.substr(1));
+
+		if(!error.length) {
+			throw new Error("Kraken API returned an unknown error");
+		}
+
+		throw new Error(error.join(', '));
+	}
+
+	return response;
 };
 
 /**
@@ -41,10 +83,16 @@ class KrakenClient {
 	 * @return {Object}            The request object
 	 */
 	api(method, params, callback) {
-		if(methods.public.indexOf(method) !== -1) {
+		// Default params to empty object
+		if(typeof params === 'function') {
+			callback = params;
+			params   = {};
+		}
+
+		if(methods.public.includes(method)) {
 			return this.publicMethod(method, params, callback);
 		}
-		else if(methods.private.indexOf(method) !== -1) {
+		else if(methods.private.includes(method)) {
 			return this.privateMethod(method, params, callback);
 		}
 		else {
@@ -62,10 +110,23 @@ class KrakenClient {
 	publicMethod(method, params, callback) {
 		params = params || {};
 
-		const path = '/' + this.config.version + '/public/' + method;
-		const url  = this.config.url + path;
+		// Default params to empty object
+		if(typeof params === 'function') {
+			callback = params;
+			params   = {};
+		}
 
-		return this.rawRequest(url, {}, params, callback);
+		const path     = '/' + this.config.version + '/public/' + method;
+		const url      = this.config.url + path;
+		const response = rawRequest(url, {}, params, this.config.timeout);
+
+		if(typeof callback === 'function') {
+			response
+				.then((result) => callback(null, result))
+				.catch((error) => callback(error, null));
+		}
+
+		return response;
 	}
 
 	/**
@@ -78,6 +139,12 @@ class KrakenClient {
 	privateMethod(method, params, callback) {
 		params = params || {};
 
+		// Default params to empty object
+		if(typeof params === 'function') {
+			callback = params;
+			params   = {};
+		}
+
 		const path = '/' + this.config.version + '/private/' + method;
 		const url  = this.config.url + path;
 
@@ -89,94 +156,27 @@ class KrakenClient {
 			params.otp = this.config.otp;
 		}
 
-		const signature = this.getMessageSignature(path, params, params.nonce);
+		const signature = getMessageSignature(
+			path,
+			params,
+			this.config.secret,
+			params.nonce
+		);
 
 		const headers = {
 			'API-Key'  : this.config.key,
 			'API-Sign' : signature,
 		};
 
-		return this.rawRequest(url, headers, params, callback);
-	}
+		const response = rawRequest(url, headers, params, this.config.timeout);
 
-	/**
-	 * This method returns a signature for a request as a Base64-encoded string
-	 * @param  {String}  path    The relative URL path for the request
-	 * @param  {Object}  request The POST body
-	 * @param  {Integer} nonce   A unique, incrementing integer
-	 * @return {String}          The request signature
-	 */
-	getMessageSignature(path, request, nonce) {
-		const message     = querystring.stringify(request);
-		const secret      = new Buffer(this.config.secret, 'base64');
-		const hash        = new crypto.createHash('sha256');
-		const hmac        = new crypto.createHmac('sha512', secret);
-		const hash_digest = hash.update(nonce + message).digest('binary');
-		const hmac_digest = hmac.update(path + hash_digest, 'binary').digest('base64');
+		if(typeof callback === 'function') {
+			response
+				.then((result) => callback(null, result))
+				.catch((error) => callback(error, null));
+		}
 
-		return hmac_digest;
-	}
-
-	/**
-	 * This method sends the actual HTTP request
-	 * @param  {String}   url      The URL to make the request
-	 * @param  {Object}   headers  Request headers
-	 * @param  {Object}   params   POST body
-	 * @param  {Function} callback A callback function to call when the request is complete
-	 * @return {Object}            The request object
-	 */
-	rawRequest(url, headers, params, callback) {
-		// Set custom User-Agent string
-		headers['User-Agent'] = 'Kraken Javascript API Client';
-
-		const options = {
-			url     : url,
-			method  : 'POST',
-			headers : headers,
-			form    : params,
-			timeout : this.config.timeout,
-		};
-
-		const req = request.post(options, function(error, response, body) {
-			if (typeof callback === 'function') {
-				let data;
-
-				if (error) {
-					return callback(new Error('Error in server response: ' + JSON.stringify(error)), null);
-				}
-
-				try {
-					data = JSON.parse(body);
-				}
-				catch (e) {
-					return callback(new Error('Could not understand response from server: ' + body), null);
-				}
-
-				// If any errors occured, Kraken will give back an array with error strings under
-				// the key "error". We should then propagate back the error message as a proper error.
-				if(data.error && data.error.length) {
-					let krakenError = null;
-
-					data.error.forEach(function(element) {
-						if (element.charAt(0) === "E") {
-							krakenError = element.substr(1);
-							return false;
-						}
-					});
-					if (krakenError) {
-						return callback(new Error('Kraken API returned error: ' + krakenError), null);
-					}
-					else {
-						return callback(new Error('Kraken API returned an unknown error'), null);
-					}
-				}
-				else {
-					return callback(null, data);
-				}
-			}
-		});
-
-		return req;
+		return response;
 	}
 }
 
