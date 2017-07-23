@@ -22,7 +22,7 @@ function KrakenClient(key, secret, options) {
 
 	var config = {
 		url: 'https://api.kraken.com',
-		version: config.version || '0',
+		version: options.version || '0',
 		key: key,
 		secret: secret,
 		otp: options.otp,
