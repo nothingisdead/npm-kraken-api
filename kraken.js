@@ -15,13 +15,14 @@ function KrakenClient(key, secret, options) {
 
 	// make sure to be backwards compatible
 	options = options || {};
+
 	if(typeof options === 'string') {
 		options = { otp: options };
 	}
 
 	var config = {
 		url: 'https://api.kraken.com',
-		version: '0',
+		version: options.version || '0',
 		key: key,
 		secret: secret,
 		otp: options.otp,
