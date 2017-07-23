@@ -6,18 +6,26 @@ var querystring	= require('qs');
  * KrakenClient connects to the Kraken.com API
  * @param {String} key    API Key
  * @param {String} secret API Secret
- * @param {String} [otp]  Two-factor password (optional) (also, doesn't work)
+ * @param {String|Object} [options={}]  Additional options. If a string is passed, will default to just setting `options.otp`.
+ * @param {String} [options.otp] Two-factor password (optional) (also, doesn't work)
+ * @param {Number} [options.timeout] Maximum timeout (in milliseconds) for all API-calls (passed to `request`)
  */
-function KrakenClient(key, secret, otp) {
+function KrakenClient(key, secret, options) {
 	var self = this;
+
+	// make sure to be backwards compatible
+	options = options || {};
+	if(typeof options === 'string') {
+		options = { otp: options };
+	}
 
 	var config = {
 		url: 'https://api.kraken.com',
 		version: '0',
 		key: key,
 		secret: secret,
-		otp: otp,
-		timeoutMS: 5000
+		otp: options.otp,
+		timeoutMS: options.timeout || 5000
 	};
 
 	/**
@@ -145,7 +153,7 @@ function KrakenClient(key, secret, otp) {
 				}
 				//If any errors occured, Kraken will give back an array with error strings under
 				//the key "error". We should then propagate back the error message as a proper error.
-				if (data.error && data.error.length) {
+				if(data.error && Array.isArray(data.error)) {
 					var krakenError = null;
 					data.error.forEach(function(element) {
 						if (element.charAt(0) === "E") {
@@ -155,6 +163,8 @@ function KrakenClient(key, secret, otp) {
 					});
 					if (krakenError) {
 						return callback.call(self, new Error('Kraken API returned error: ' + krakenError), null);
+					} else {
+						return callback.call(self, new Error('Kraken API returned an unknown error'), null);	
 					}
 				}
 				else {
