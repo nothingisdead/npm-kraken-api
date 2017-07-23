@@ -1,6 +1,6 @@
-var request		= require('request');
-var crypto		= require('crypto');
-var querystring	= require('qs');
+var request     = require('request');
+var crypto      = require('crypto');
+var querystring = require('qs');
 
 /**
  * KrakenClient connects to the Kraken.com API
@@ -26,7 +26,7 @@ function KrakenClient(key, secret, options) {
 		key: key,
 		secret: secret,
 		otp: options.otp,
-		timeoutMS: options.timeout || 5000
+		timeout: options.timeout || 15000,
 	};
 
 	/**
@@ -62,8 +62,8 @@ function KrakenClient(key, secret, options) {
 	function publicMethod(method, params, callback) {
 		params = params || {};
 
-		var path	= '/' + config.version + '/public/' + method;
-		var url		= config.url + path;
+		var path = '/' + config.version + '/public/' + method;
+		var url  = config.url + path;
 
 		return rawRequest(url, {}, params, callback);
 	}
@@ -78,8 +78,8 @@ function KrakenClient(key, secret, options) {
 	function privateMethod(method, params, callback) {
 		params = params || {};
 
-		var path	= '/' + config.version + '/private/' + method;
-		var url		= config.url + path;
+		var path = '/' + config.version + '/private/' + method;
+		var url  = config.url + path;
 
 		if (!params.nonce) {
 			params.nonce = new Date() * 1000; // spoof microsecond
@@ -107,13 +107,12 @@ function KrakenClient(key, secret, options) {
 	 * @return {String}          The request signature
 	 */
 	function getMessageSignature(path, request, nonce) {
-		var message	= querystring.stringify(request);
-		var secret	= new Buffer(config.secret, 'base64');
-		var hash	= new crypto.createHash('sha256');
-		var hmac	= new crypto.createHmac('sha512', secret);
-
-		var hash_digest	= hash.update(nonce + message).digest('binary');
-		var hmac_digest	= hmac.update(path + hash_digest, 'binary').digest('base64');
+		var message     = querystring.stringify(request);
+		var secret      = new Buffer(config.secret, 'base64');
+		var hash        = new crypto.createHash('sha256');
+		var hmac        = new crypto.createHmac('sha512', secret);
+		var hash_digest = hash.update(nonce + message).digest('binary');
+		var hmac_digest = hmac.update(path + hash_digest, 'binary').digest('base64');
 
 		return hmac_digest;
 	}
@@ -131,11 +130,11 @@ function KrakenClient(key, secret, options) {
 		headers['User-Agent'] = 'Kraken Javascript API Client';
 
 		var options = {
-			url: url,
-			method: 'POST',
-			headers: headers,
-			form: params,
-			timeout: config.timeoutMS
+			url     : url,
+			method  : 'POST',
+			headers : headers,
+			form    : params,
+			timeout : config.timeout,
 		};
 
 		var req = request.post(options, function(error, response, body) {
@@ -165,7 +164,7 @@ function KrakenClient(key, secret, options) {
 					if (krakenError) {
 						return callback.call(self, new Error('Kraken API returned error: ' + krakenError), null);
 					} else {
-						return callback.call(self, new Error('Kraken API returned an unknown error'), null);	
+						return callback.call(self, new Error('Kraken API returned an unknown error'), null);
 					}
 				}
 				else {
@@ -176,9 +175,9 @@ function KrakenClient(key, secret, options) {
 		return req;
 	}
 
-	self.api			= api;
-	self.publicMethod	= publicMethod;
-	self.privateMethod	= privateMethod;
+	self.api           = api;
+	self.publicMethod  = publicMethod;
+	self.privateMethod = privateMethod;
 }
 
 module.exports = KrakenClient;

@@ -9,8 +9,7 @@
     "bitcoin"
   ],
   "author": "Robert Myers (https://github.com/nothingisdead)",
-  "contributors": [
-  ],
+  "contributors": [],
   "license": "MIT",
   "dependencies": {
     "qs": ">=6.4.0",
