@@ -163,6 +163,8 @@ function KrakenClient(key, secret, options) {
 					});
 					if (krakenError) {
 						return callback.call(self, new Error('Kraken API returned error: ' + krakenError), null);
+					} else {
+						return callback.call(self, new Error('Kraken API returned an unknown error'), null);	
 					}
 				}
 				else {
