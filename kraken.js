@@ -1,23 +1,32 @@
 var request		= require('request');
 var crypto		= require('crypto');
-var querystring	= require('querystring');
+var querystring	= require('qs');
 
 /**
  * KrakenClient connects to the Kraken.com API
  * @param {String} key    API Key
  * @param {String} secret API Secret
- * @param {String} [otp]  Two-factor password (optional) (also, doesn't work)
+ * @param {String|Object} [options={}]  Additional options. If a string is passed, will default to just setting `options.otp`.
+ * @param {String} [options.otp] Two-factor password (optional) (also, doesn't work)
+ * @param {Number} [options.timeout] Maximum timeout (in milliseconds) for all API-calls (passed to `request`)
  */
-function KrakenClient(key, secret, otp, config = {}) {
+function KrakenClient(key, secret, options) {
 	var self = this;
+
+	// make sure to be backwards compatible
+	options = options || {};
+
+	if(typeof options === 'string') {
+		options = { otp: options };
+	}
 
 	var config = {
 		url: 'https://api.kraken.com',
 		version: config.version || '0',
 		key: key,
 		secret: secret,
-		otp: otp,
-		timeoutMS: config.timeout || 5000
+		otp: options.otp,
+		timeoutMS: options.timeout || 5000
 	};
 
 	/**
@@ -32,10 +41,10 @@ function KrakenClient(key, secret, otp, config = {}) {
 			public: ['Time', 'Assets', 'AssetPairs', 'Ticker', 'Depth', 'Trades', 'Spread', 'OHLC'],
 			private: ['Balance', 'TradeBalance', 'OpenOrders', 'ClosedOrders', 'QueryOrders', 'TradesHistory', 'QueryTrades', 'OpenPositions', 'Ledgers', 'QueryLedgers', 'TradeVolume', 'AddOrder', 'CancelOrder', 'DepositMethods', 'DepositAddresses', 'DepositStatus', 'WithdrawInfo', 'Withdraw', 'WithdrawStatus', 'WithdrawCancel']
 		};
-		if(methods.public.indexOf(method) !== -1) {
+		if (methods.public.indexOf(method) !== -1) {
 			return publicMethod(method, params, callback);
 		}
-		else if(methods.private.indexOf(method) !== -1) {
+		else if (methods.private.indexOf(method) !== -1) {
 			return privateMethod(method, params, callback);
 		}
 		else {
@@ -72,11 +81,11 @@ function KrakenClient(key, secret, otp, config = {}) {
 		var path	= '/' + config.version + '/private/' + method;
 		var url		= config.url + path;
 
-		if(!params.nonce) {
+		if (!params.nonce) {
 			params.nonce = new Date() * 1000; // spoof microsecond
 		}
 
-		if(config.otp !== undefined) {
+		if (config.otp !== undefined) {
 			params.otp = config.otp;
 		}
 
@@ -130,22 +139,22 @@ function KrakenClient(key, secret, otp, config = {}) {
 		};
 
 		var req = request.post(options, function(error, response, body) {
-			if(typeof callback === 'function') {
+			if (typeof callback === 'function') {
 				var data;
 
-				if(error) {
+				if (error) {
 					return callback.call(self, new Error('Error in server response: ' + JSON.stringify(error)), null);
 				}
 
 				try {
 					data = JSON.parse(body);
 				}
-				catch(e) {
+				catch (e) {
 					return callback.call(self, new Error('Could not understand response from server: ' + body), null);
 				}
 				//If any errors occured, Kraken will give back an array with error strings under
 				//the key "error". We should then propagate back the error message as a proper error.
-				if(data.error && data.error.length) {
+				if(data.error && Array.isArray(data.error)) {
 					var krakenError = null;
 					data.error.forEach(function(element) {
 						if (element.charAt(0) === "E") {
@@ -155,6 +164,8 @@ function KrakenClient(key, secret, otp, config = {}) {
 					});
 					if (krakenError) {
 						return callback.call(self, new Error('Kraken API returned error: ' + krakenError), null);
+					} else {
+						return callback.call(self, new Error('Kraken API returned an unknown error'), null);	
 					}
 				}
 				else {

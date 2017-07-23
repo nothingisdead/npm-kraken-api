@@ -1,6 +1,6 @@
 {
   "name": "kraken-api",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "kraken.com API client library for NodeJS",
   "keywords": [
     "kraken",
@@ -13,7 +13,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "querystring": ">=0.2.0",
+    "qs": ">=6.4.0",
     "request": ">=2.27.0"
   },
   "repository": {
