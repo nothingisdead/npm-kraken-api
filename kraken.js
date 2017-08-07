@@ -12,7 +12,7 @@ const methods = {
 const defaults = {
 	url     : 'https://api.kraken.com',
 	version : 0,
-	timeout : 5000,
+	timeout : 10000,
 };
 
 // Create a signature for a request
