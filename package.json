@@ -21,7 +21,7 @@
   },
   "main": "kraken.js",
   "engines": {
-    "node": ">=0.10"
+    "node": ">=8"
   },
   "bugs": {
     "url": "https://github.com/nothingisdead/npm-kraken-api/issues",
