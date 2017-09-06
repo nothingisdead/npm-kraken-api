@@ -3,9 +3,15 @@ Node Kraken
 
 NodeJS Client Library for the Kraken (kraken.com) API
 
-This is an asynchronous node js client for the kraken.com API. It exposes all the API methods found here: https://www.kraken.com/help/api through the ```api``` method:
+This is an asynchronous node js client for the kraken.com API. It exposes all the API methods found here: https://www.kraken.com/help/api through the ```api``` method.
 
-Example Usage:
+### Installation
+
+```bash
+npm install kraken-api
+```
+
+### Example Usage:
 
 ```javascript
 const key          = '...'; // API Key
@@ -22,7 +28,7 @@ const kraken       = new KrakenClient(key, secret);
 })();
 ```
 
-**Updates:**
+### Updates:
 
 As of version 1.0.0:
 - All methods return a promise.
@@ -39,7 +45,7 @@ function(error, data) {
 
 Thanks to @tehsenaus and @petermrg for pointing this out.
 
-Credit:
+### Credit:
 
 I used the example php implementation at https://github.com/payward/kraken-api-client and the python implementation at https://github.com/veox/python3-krakenex as references.
 
