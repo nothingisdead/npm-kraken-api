@@ -1,0 +1,5 @@
+{
+	"url"     : "https://api.kraken.com",
+	"version" : 0,
+	"timeout" : 5000
+}
