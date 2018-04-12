@@ -1,31 +1,12 @@
 const got    = require('got');
-const crypto = require('crypto');
 const qs     = require('qs');
+const {getMessageSignature} = require('./lib/signature')
 
 // Public/Private method names
-const methods = {
-	public  : [ 'Time', 'Assets', 'AssetPairs', 'Ticker', 'Depth', 'Trades', 'Spread', 'OHLC' ],
-	private : [ 'Balance', 'TradeBalance', 'OpenOrders', 'ClosedOrders', 'QueryOrders', 'TradesHistory', 'QueryTrades', 'OpenPositions', 'Ledgers', 'QueryLedgers', 'TradeVolume', 'AddOrder', 'CancelOrder', 'DepositMethods', 'DepositAddresses', 'DepositStatus', 'WithdrawInfo', 'Withdraw', 'WithdrawStatus', 'WithdrawCancel' ],
-};
+const methods = require('./config/methods.json');
 
 // Default options
-const defaults = {
-	url     : 'https://api.kraken.com',
-	version : 0,
-	timeout : 5000,
-};
-
-// Create a signature for a request
-const getMessageSignature = (path, request, secret, nonce) => {
-	const message       = qs.stringify(request);
-	const secret_buffer = new Buffer(secret, 'base64');
-	const hash          = new crypto.createHash('sha256');
-	const hmac          = new crypto.createHmac('sha512', secret_buffer);
-	const hash_digest   = hash.update(nonce + message).digest('binary');
-	const hmac_digest   = hmac.update(path + hash_digest, 'binary').digest('base64');
-
-	return hmac_digest;
-};
+const defaults = require('./config/request.json');
 
 // Send an API request
 const rawRequest = async (url, headers, data, timeout) => {
@@ -67,12 +48,12 @@ const rawRequest = async (url, headers, data, timeout) => {
  */
 class KrakenClient {
 	constructor(key, secret, options) {
-		// Allow passing the OTP as the third argument for backwards compatibility
-		if(typeof options === 'string') {
-			options = { otp : options };
-		}
+		if(!key || !secret) throw new Error('[Error] null key or secret')
 
-		this.config = Object.assign({ key, secret }, defaults, options);
+		// Allow passing the OTP as the third argument for backwards compatibility
+		if(typeof options === 'string') options = { otp : options };
+
+		this.config = { ...defaults, key, secret, options};
 	}
 
 	/**
@@ -107,9 +88,7 @@ class KrakenClient {
 	 * @param  {Function} callback A callback function to be executed when the request is complete
 	 * @return {Object}            The request object
 	 */
-	publicMethod(method, params, callback) {
-		params = params || {};
-
+	publicMethod(method, params = {}, callback) {
 		// Default params to empty object
 		if(typeof params === 'function') {
 			callback = params;
@@ -136,9 +115,7 @@ class KrakenClient {
 	 * @param  {Function} callback A callback function to be executed when the request is complete
 	 * @return {Object}            The request object
 	 */
-	privateMethod(method, params, callback) {
-		params = params || {};
-
+	privateMethod(method, params = {}, callback) {
 		// Default params to empty object
 		if(typeof params === 'function') {
 			callback = params;

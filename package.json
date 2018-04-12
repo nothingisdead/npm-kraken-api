@@ -2,6 +2,9 @@
   "name": "kraken-api",
   "version": "1.0.0",
   "description": "kraken.com API client library for NodeJS",
+  "scripts": {
+    "test": "jest"
+  },
   "keywords": [
     "kraken",
     "api",
@@ -27,5 +30,8 @@
     "url": "https://github.com/nothingisdead/npm-kraken-api/issues",
     "email": "rbmyr8@gmail.com"
   },
-  "readmeFilename": "README.md"
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "jest": "^22.4.3"
+  }
 }
