@@ -148,9 +148,7 @@ class KrakenClient {
 		const path = '/' + this.config.version + '/private/' + method;
 		const url  = this.config.url + path;
 
-		if(!params.nonce) {
-			params.nonce = new Date() * 1000; // spoof microsecond
-		}
+		params.nonce = new Date() * 1000; // spoof microsecond
 
 		if(this.config.otp !== undefined) {
 			params.otp = this.config.otp;
