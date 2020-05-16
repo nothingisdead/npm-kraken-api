@@ -30,12 +30,21 @@ const kraken       = new KrakenClient(key, secret);
 
 ### Updates:
 
-As of version 1.0.0:
+#### 1.0.1:
+- Update dependencies
+- Update required NodeJS version (#42)
+- Add GetWebSocketsToken private method (#65)
+- Update README (#44)
+
+#### 1.0.0:
+
 - All methods return a promise.
 - The second argument (parameters) can be omitted.
 - The third argument to the constructor can be an object (configuration) or a string (OTP), for backwards compatibility.
 
-As of version 0.1.0, the callback passed to the ```api``` function conforms to the Node.js standard of
+#### 0.1.0:
+
+The callback passed to the ```api``` function conforms to the Node.js standard of
 
 ```javascript
 function(error, data) {
