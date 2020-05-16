@@ -32,9 +32,9 @@ const kraken       = new KrakenClient(key, secret);
 
 #### 1.0.1:
 - Update dependencies
-- Update required NodeJS version (#42)
-- Add GetWebSocketsToken private method (#65)
-- Update README (#44)
+- Update required NodeJS version: #42
+- Add GetWebSocketsToken private method: #65
+- Update README: #44
 
 #### 1.0.0:
 
