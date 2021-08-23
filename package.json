@@ -12,8 +12,8 @@
   "contributors": [],
   "license": "MIT",
   "dependencies": {
-    "got": "^11.1.4",
-    "qs": "^6.9.4"
+    "got": "^11.8.2",
+    "qs": "^6.10.1"
   },
   "repository": {
     "type": "git",
