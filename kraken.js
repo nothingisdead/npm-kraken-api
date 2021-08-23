@@ -149,8 +149,7 @@ class KrakenClient {
 		const url  = this.config.url + path;
 
 		if (!params.nonce) {
-			const hrTime = process.hrtime()
-			params.nonce = hrTime[0] * 1000000 + hrTime[1] / 1000
+			params.nonce = Number(Date.now() + String(process.hrtime()[1]).slice(3, 6));
 		}
 
 		if(this.config.otp !== undefined) {
