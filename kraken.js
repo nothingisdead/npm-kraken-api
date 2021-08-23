@@ -148,9 +148,7 @@ class KrakenClient {
 		const path = '/' + this.config.version + '/private/' + method;
 		const url  = this.config.url + path;
 
-		if (!params.nonce) {
-			params.nonce = Number(Date.now() + String(process.hrtime()[1]).slice(3, 6));
-		}
+		params.nonce = Number(Date.now() + String(process.hrtime()[1]).slice(3, 6));
 
 		if(this.config.otp !== undefined) {
 			params.otp = this.config.otp;
