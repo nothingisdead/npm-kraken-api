@@ -1,7 +1,7 @@
 {
   "name": "kraken-api",
   "version": "1.0.1",
-  "description": "kraken.com API client library for NodeJS",
+  "description": "Typed kraken.com API client library for NodeJS",
   "keywords": [
     "kraken",
     "api",
@@ -9,9 +9,12 @@
     "bitcoin"
   ],
   "author": "Robert Myers (https://github.com/nothingisdead)",
-  "contributors": [],
+  "contributors": [
+    "Nicolas Couraud (https://github.com/nicolascrd"
+  ],
   "license": "MIT",
   "dependencies": {
+    "@types/qs": "^6.9.7",
     "got": "^11.1.4",
     "qs": "^6.9.4"
   },
