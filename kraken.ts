@@ -139,11 +139,11 @@ class KrakenClient {
   }
 
   /* This method makes a public API request. */
-  publicMethod(
+  async publicMethod(
     method: PublicMethod, // The API Method (public or private)
     params: Record<string, any>, // Arguments to pass to the api call
     callback: (err: Error | null, res: any) => void // A callback function to be executed when the request is complete
-  ): object {
+  ): Promise<any> {
     params = params || {};
 
     const path = "/" + this.options.version + "/public/" + method;
@@ -164,7 +164,7 @@ class KrakenClient {
     method: PrivateMethod, // The API method (public or private)
     params: Record<string, any>, // Arguments to pass to the api call
     callback: (err: Error | null, res: any) => void // A callback function to be executed when the request is complete
-  ): object {
+  ): Promise<any> {
     const path = "/" + this.options.version + "/private/" + method;
     const url = this.options.url + path;
 
