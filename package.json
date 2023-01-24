@@ -2,6 +2,9 @@
   "name": "kraken-api",
   "version": "2.0.0",
   "description": "Typed kraken.com API client library for NodeJS",
+  "scripts": {
+    "tsc": "tsc"
+  },
   "keywords": [
     "kraken",
     "api",
@@ -14,21 +17,20 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@types/qs": "^6.9.7",
     "got": "^11.1.4",
-    "qs": "^6.9.4"
+    "qs": "^6.9.4",
+    "ts-node": "^10.9.1"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nothingisdead/npm-kraken-api"
-  },
-  "main": "kraken.js",
+  "main": "./dist/index.ts",
+  "types": "./dist/index.d.ts",
   "engines": {
-    "node": ">=8"
+    "node": ">=14"
   },
-  "bugs": {
-    "url": "https://github.com/nothingisdead/npm-kraken-api/issues",
-    "email": "rbmyr8@gmail.com"
-  },
-  "readmeFilename": "README.md"
+  "type": "module",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "@types/got": "^9.6.12",
+    "@types/qs": "^6.9.7",
+    "typescript": "^4.9.4"
+  }
 }

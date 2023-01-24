@@ -1,9 +1,10 @@
 import { createHash, createHmac } from "crypto";
-import got, { Headers } from "got";
+import { Headers } from "got";
+const { default: got } = require("got");
 import { stringify } from "qs";
 
 // Public/Private method names
-export type PublicMethod =
+type PublicMethod =
   | "Time"
   | "Assets"
   | "AssetPairs"
@@ -13,7 +14,7 @@ export type PublicMethod =
   | "Spread"
   | "OHLC";
 
-export type PrivateMethod =
+type PrivateMethod =
   | "Balance"
   | "TradeBalance"
   | "OpenOrders"
@@ -94,7 +95,6 @@ const rawRequest = async (
     method: "POST",
     body: stringify(data),
   });
-
   const { body } = await got(url, options);
   const response = JSON.parse(body);
 
@@ -113,7 +113,7 @@ const rawRequest = async (
   return response;
 };
 
-class KrakenClient {
+export default class KrakenClient {
   key: string; // API Key
   secret: string; // API Secret
   options: Options;
@@ -160,7 +160,7 @@ class KrakenClient {
   }
 
   /* This method makes a private API request. */
-  privateMethod(
+  async privateMethod(
     method: PrivateMethod, // The API method (public or private)
     params: Record<string, any>, // Arguments to pass to the api call
     callback: (err: Error | null, res: any) => void // A callback function to be executed when the request is complete
@@ -197,5 +197,3 @@ class KrakenClient {
     return response;
   }
 }
-
-export default KrakenClient;
