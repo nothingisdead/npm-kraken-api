@@ -1,6 +1,6 @@
 import { createHash, createHmac } from "crypto";
+import got from "got";
 import { Headers } from "got";
-const { default: got } = require("got");
 import { stringify } from "qs";
 
 // Public/Private method names
@@ -95,7 +95,7 @@ const rawRequest = async (
     method: "POST",
     body: stringify(data),
   });
-  const { body } = await got(url, options);
+  const { body } = await got(url, options as any);
   const response = JSON.parse(body);
 
   if (response.error && response.error.length) {
@@ -148,6 +148,7 @@ export default class KrakenClient {
 
     const path = "/" + this.options.version + "/public/" + method;
     const url = this.options.url + path;
+
     const response = rawRequest(url, {}, params, this.options.timeout);
 
     if (typeof callback === "function") {

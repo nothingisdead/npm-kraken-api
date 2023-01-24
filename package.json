@@ -17,11 +17,11 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "got": "^11.1.4",
+    "got": "^12",
     "qs": "^6.9.4",
     "ts-node": "^10.9.1"
   },
-  "main": "./dist/index.ts",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "engines": {
     "node": ">=14"
@@ -29,7 +29,6 @@
   "type": "module",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "@types/got": "^9.6.12",
     "@types/qs": "^6.9.7",
     "typescript": "^4.9.4"
   }
