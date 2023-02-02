@@ -67,8 +67,11 @@ const getMessageSignature = (
   const secret_buffer = new Buffer(secret, "base64");
   const hash = createHash("sha256");
   const hmac = createHmac("sha512", secret_buffer);
-  const hash_digest = hash.update(nonce + message).digest("base64");
-  const hmac_digest = hmac.update(path + hash_digest, "utf8").digest("base64");
+  // any type for TS as for some reason "binary" is not a valid Encoding value in .d.ts file whereas the module actually supports it
+  const hash_digest = hash.update(nonce + message).digest("binary" as any);
+  const hmac_digest = hmac
+    .update(path + hash_digest, "binary" as any)
+    .digest("base64");
 
   return hmac_digest;
 };
@@ -179,12 +182,3 @@ export default class KrakenClient {
     return response;
   }
 }
-
-(async () => {
-  let client = new KrakenClient(
-	  "__public_key__", "__private_key__"
-  )
-;
-
-  console.log(await client.privateMethod("Balance", {}, () => {}));
-})();
