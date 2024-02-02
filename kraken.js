@@ -28,17 +28,26 @@ const getMessageSignature = (path, request, secret, nonce) => {
 };
 
 // Send an API request
-const rawRequest = async (url, headers, data, timeout) => {
+const rawRequest = async (url, headers, data, timeout, isPublic) => {
 	// Set custom User-Agent string
 	headers['User-Agent'] = 'Kraken Javascript API Client';
 
 	const options = { headers, timeout };
 
-	Object.assign(options, {
-		method : 'POST',
-		body   : qs.stringify(data),
-	});
+	const queryString = qs.stringify(data);
 
+	if (isPublic){
+		url = `${url}?${queryString}`;
+		Object.assign(options, {
+			method : 'GET'
+		});
+	}
+	else {
+		Object.assign(options, {
+			method : 'POST',
+			body   : queryString
+		});
+	}
 	const { body } = await got(url, options);
 	const response = JSON.parse(body);
 
@@ -118,7 +127,7 @@ class KrakenClient {
 
 		const path     = '/' + this.config.version + '/public/' + method;
 		const url      = this.config.url + path;
-		const response = rawRequest(url, {}, params, this.config.timeout);
+		const response = rawRequest(url, {}, params, this.config.timeout, true);
 
 		if(typeof callback === 'function') {
 			response
@@ -168,7 +177,7 @@ class KrakenClient {
 			'API-Sign' : signature,
 		};
 
-		const response = rawRequest(url, headers, params, this.config.timeout);
+		const response = rawRequest(url, headers, params, this.config.timeout, false);
 
 		if(typeof callback === 'function') {
 			response
