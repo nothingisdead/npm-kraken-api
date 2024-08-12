@@ -1,3 +1,6 @@
+# DEPRECATED
+## This project has been deprecated. Please see [#66](https://github.com/nothingisdead/npm-kraken-api/issues/66). I suggest using the [REST API](https://docs.kraken.com/api/docs/guides/spot-rest-intro) directly with [fetch](https://nodejs.org/dist/latest/docs/api/globals.html#fetch).
+
 Node Kraken
 ===========
 
