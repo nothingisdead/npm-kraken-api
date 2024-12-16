@@ -5,7 +5,7 @@ const qs     = require('qs');
 // Public/Private method names
 const methods = {
 	public  : [ 'Time', 'Assets', 'AssetPairs', 'Ticker', 'Depth', 'Trades', 'Spread', 'OHLC' ],
-	private : [ 'Balance', 'TradeBalance', 'OpenOrders', 'ClosedOrders', 'QueryOrders', 'TradesHistory', 'QueryTrades', 'OpenPositions', 'Ledgers', 'QueryLedgers', 'TradeVolume', 'AddOrder', 'CancelOrder', 'DepositMethods', 'DepositAddresses', 'DepositStatus', 'WithdrawInfo', 'Withdraw', 'WithdrawStatus', 'WithdrawCancel', 'GetWebSocketsToken' ],
+	private : [ 'Balance', 'TradeBalance', 'OpenOrders', 'ClosedOrders', 'QueryOrders', 'TradesHistory', 'QueryTrades', 'OpenPositions', 'Ledgers', 'QueryLedgers', 'TradeVolume', 'AddOrder', 'CancelOrder', 'CancelAll', 'DepositMethods', 'DepositAddresses', 'DepositStatus', 'WithdrawInfo', 'Withdraw', 'WithdrawStatus', 'WithdrawCancel', 'GetWebSocketsToken', 'AddExport', 'ExportStatus', 'RetrieveExport', 'RemoveExport' ],
 };
 
 // Default options
@@ -18,7 +18,7 @@ const defaults = {
 // Create a signature for a request
 const getMessageSignature = (path, request, secret, nonce) => {
 	const message       = qs.stringify(request);
-	const secret_buffer = new Buffer(secret, 'base64');
+	const secret_buffer = Buffer.from(secret, 'base64');
 	const hash          = new crypto.createHash('sha256');
 	const hmac          = new crypto.createHmac('sha512', secret_buffer);
 	const hash_digest   = hash.update(nonce + message).digest('binary');
@@ -148,9 +148,7 @@ class KrakenClient {
 		const path = '/' + this.config.version + '/private/' + method;
 		const url  = this.config.url + path;
 
-		if(!params.nonce) {
-			params.nonce = new Date() * 1000; // spoof microsecond
-		}
+		params.nonce = Number(Date.now() + String(process.hrtime()[1]).slice(3, 6));
 
 		if(this.config.otp !== undefined) {
 			params.otp = this.config.otp;
