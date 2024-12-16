@@ -147,9 +147,13 @@ class KrakenClient {
 
 		const path = '/' + this.config.version + '/private/' + method;
 		const url  = this.config.url + path;
+		
+		// Remove nonce later if we add it now.
+		let newNonce = false;
 
 		if(!params.nonce) {
 			params.nonce = new Date() * 1000; // spoof microsecond
+			newNonce = true;
 		}
 
 		if(this.config.otp !== undefined) {
@@ -170,6 +174,10 @@ class KrakenClient {
 
 		const response = rawRequest(url, headers, params, this.config.timeout);
 
+		if(newNonce) {
+			delete params.nonce;
+		}
+		
 		if(typeof callback === 'function') {
 			response
 				.then((result) => callback(null, result))
